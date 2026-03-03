@@ -3,21 +3,21 @@ import { FileText, Play, CheckCircle2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function OrderCard({ order, onStatusChange, onViewSop }) {
-    const { orderid, queueno, orderstatus, orderat, start_at, items } = order;
+    const { ID_ออเดอร์, คิวที่, สถานะออเดอร์, วันที่เวลา_สั่ง, เวลาที่เริ่มทำ, items } = order;
     const [elapsedWait, setElapsedWait] = useState(0);
 
     // Update wait time every minute
     useEffect(() => {
         const calcTime = () => {
-            const baseTime = start_at ? new Date(start_at) : new Date(orderat);
+            const baseTime = เวลาที่เริ่มทำ ? new Date(เวลาที่เริ่มทำ) : new Date(วันที่เวลา_สั่ง);
             setElapsedWait(differenceInMinutes(new Date(), baseTime));
         };
         calcTime();
         const timer = setInterval(calcTime, 60000);
         return () => clearInterval(timer);
-    }, [orderat, start_at]);
+    }, [วันที่เวลา_สั่ง, เวลาที่เริ่มทำ]);
 
-    const isDoing = orderstatus === 'กำลังทำ';
+    const isDoing = สถานะออเดอร์ === 'กำลังทำ';
 
     // Style based on status and time
     const cardBorder = isDoing
@@ -33,7 +33,7 @@ export default function OrderCard({ order, onStatusChange, onViewSop }) {
             {/* Header */}
             <div className={`${headerBg} px-4 py-3 flex items-center justify-between`}>
                 <div className="flex items-baseline gap-2">
-                    <span className="text-xl font-black">#{queueno}</span>
+                    <span className="text-xl font-black">คิวที่ {คิวที่}</span>
                 </div>
                 <div className={`text-sm font-semibold flex items-center gap-1 ${isDoing ? 'text-emerald-50' : elapsedWait > 15 ? 'text-red-500' : 'text-slate-500'}`}>
                     <ClockIcon className="w-4 h-4" />
@@ -47,20 +47,20 @@ export default function OrderCard({ order, onStatusChange, onViewSop }) {
                     <div key={idx} className="flex flex-col gap-1 border-b border-slate-50 last:border-0 pb-2 last:pb-0">
                         <div className="flex items-start justify-between gap-3">
                             <div className="flex items-start gap-2 flex-1">
-                                <span className="font-bold text-slate-700 w-5 text-right">{item.quantity}x</span>
-                                <span className="font-medium text-slate-800">{item.menuname}</span>
+                                <span className="font-bold text-slate-700 w-5 text-right">{item.จำนวน}x</span>
+                                <span className="font-medium text-slate-800">{item.ชื่อเมนู}</span>
                             </div>
                             <button
-                                onClick={() => onViewSop(item.menuid)}
+                                onClick={() => onViewSop(item.ID_เมนู)}
                                 className="text-emerald-600 bg-emerald-50 hover:bg-emerald-100 p-1.5 rounded-lg transition-colors shrink-0 tooltip"
                                 title="ดูสูตรอาหาร (SOP)"
                             >
                                 <FileText className="w-4 h-4" />
                             </button>
                         </div>
-                        {item.special_note && (
+                        {item.หมายเหตุ_คำสั่งพิเศษ && (
                             <div className="pl-7 text-xs font-medium text-amber-600 bg-amber-50 py-1 px-2 rounded-md inline-block w-fit">
-                                * {item.special_note}
+                                * {item.หมายเหตุ_คำสั่งพิเศษ}
                             </div>
                         )}
                     </div>
@@ -71,7 +71,7 @@ export default function OrderCard({ order, onStatusChange, onViewSop }) {
             <div className="p-3 bg-slate-50 border-t border-slate-100 flex gap-2">
                 {!isDoing ? (
                     <button
-                        onClick={() => onStatusChange(orderid, 'กำลังทำ')}
+                        onClick={() => onStatusChange(ID_ออเดอร์, 'กำลังทำ')}
                         className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm"
                     >
                         <Play className="w-4 h-4 fill-white" />
@@ -79,7 +79,7 @@ export default function OrderCard({ order, onStatusChange, onViewSop }) {
                     </button>
                 ) : (
                     <button
-                        onClick={() => onStatusChange(orderid, 'เสร็จสิ้น')}
+                        onClick={() => onStatusChange(ID_ออเดอร์, 'เสร็จสิ้น')}
                         className="flex-1 bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold flex items-center justify-center gap-2 transition-colors shadow-sm"
                     >
                         <CheckCircle2 className="w-5 h-5" />

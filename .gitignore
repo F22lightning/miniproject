@@ -1,0 +1,17 @@
+# Database data
+db_data/
+
+# Backend
+backend/node_modules/
+backend/npm-debug.log
+backend/.env
+
+# Frontend (already covered by frontend/.gitignore mostly, but let's be safe)
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# OS files
+.DS_Store
+Thumbs.db

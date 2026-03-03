@@ -31,13 +31,16 @@ export default function OrderBoard() {
         try {
             // Optimistic update
             setOrders(prev =>
-                prev.map(o => o.orderid === orderId ? { ...o, orderstatus: newStatus } : o)
+                prev.map(o => o.ID_ออเดอร์ === orderId ? { ...o, สถานะออเดอร์: newStatus } : o)
             );
 
             await updateOrderStatus(orderId, newStatus);
             if (newStatus === 'เสร็จสิ้น') {
                 // Remove from board if finished
-                setOrders(prev => prev.filter(o => o.orderid !== orderId));
+                setOrders(prev => prev.filter(o => o.ID_ออเดอร์ !== orderId));
+            } else {
+                // Reload to get exact timestamps from DB
+                loadOrders();
             }
         } catch (error) {
             console.error('Failed to update status', error);
@@ -45,7 +48,7 @@ export default function OrderBoard() {
         }
     };
 
-    if (loading) {
+    if (loading && orders.length === 0) {
         return (
             <div className="flex items-center justify-center h-full pt-20 text-emerald-600">
                 <Loader2 className="w-8 h-8 animate-spin" />
@@ -53,8 +56,8 @@ export default function OrderBoard() {
         );
     }
 
-    const waitingOrders = orders.filter(o => o.orderstatus === 'รอคิว');
-    const doingOrders = orders.filter(o => o.orderstatus === 'กำลังทำ');
+    const waitingOrders = orders.filter(o => o.สถานะออเดอร์ === 'รอคิว');
+    const doingOrders = orders.filter(o => o.สถานะออเดอร์ === 'กำลังทำ');
 
     return (
         <div className="flex flex-col md:flex-row gap-6 h-full items-start">
@@ -76,7 +79,7 @@ export default function OrderBoard() {
                     ) : (
                         waitingOrders.map(order => (
                             <OrderCard
-                                key={order.orderid}
+                                key={order.ID_ออเดอร์}
                                 order={order}
                                 onStatusChange={handleStatusChange}
                                 onViewSop={setSelectedMenuId}
@@ -104,7 +107,7 @@ export default function OrderBoard() {
                     ) : (
                         doingOrders.map(order => (
                             <OrderCard
-                                key={order.orderid}
+                                key={order.ID_ออเดอร์}
                                 order={order}
                                 onStatusChange={handleStatusChange}
                                 onViewSop={setSelectedMenuId}
